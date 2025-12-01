@@ -5,6 +5,7 @@ class TopSettingsBar extends StatelessWidget {
   final bool isHdrOn;
   final VoidCallback onFlashToggle;
   final VoidCallback onHdrToggle;
+  final VoidCallback onSettingsPressed;
 
   const TopSettingsBar({
     super.key,
@@ -12,6 +13,7 @@ class TopSettingsBar extends StatelessWidget {
     required this.isHdrOn,
     required this.onFlashToggle,
     required this.onHdrToggle,
+    required this.onSettingsPressed,
   });
 
   @override
@@ -24,7 +26,7 @@ class TopSettingsBar extends StatelessWidget {
         children: [
           IconButton(
             icon: const Icon(Icons.settings_outlined, color: Colors.white),
-            onPressed: () {},
+            onPressed: onSettingsPressed,
           ),
           IconButton(
             icon: Icon(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:couldai_user_app/screens/gallery_screen.dart';
+import 'package:couldai_user_app/screens/settings_screen.dart';
 import 'package:couldai_user_app/widgets/camera_viewfinder.dart';
 import 'package:couldai_user_app/widgets/control_bar.dart';
 import 'package:couldai_user_app/widgets/mode_selector.dart';
@@ -46,6 +48,20 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
+  void _navigateToSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SettingsScreen()),
+    );
+  }
+
+  void _navigateToGallery() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const GalleryScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +75,7 @@ class _CameraScreenState extends State<CameraScreen> {
               isHdrOn: _isHdrOn,
               onFlashToggle: () => setState(() => _isFlashOn = !_isFlashOn),
               onHdrToggle: () => setState(() => _isHdrOn = !_isHdrOn),
+              onSettingsPressed: _navigateToSettings,
             ),
             
             // Main Camera Area (Viewfinder + Overlays)
@@ -74,17 +91,35 @@ class _CameraScreenState extends State<CameraScreen> {
                     left: 0,
                     right: 0,
                     child: Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.black45,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          '${_zoomLevel.toStringAsFixed(1)}x',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                      child: GestureDetector(
+                        onTap: () {
+                          // Cycle zoom levels on tap
+                          setState(() {
+                            if (_zoomLevel == 1.0) _zoomLevel = 2.0;
+                            else if (_zoomLevel == 2.0) _zoomLevel = 5.0;
+                            else _zoomLevel = 1.0;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.black45,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.white24),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.zoom_in, color: Colors.white, size: 16),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${_zoomLevel.toStringAsFixed(1)}x',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -110,7 +145,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 ControlBar(
                   onShutterPressed: _onShutterPressed,
                   onSwitchCamera: () {},
-                  onGalleryPressed: () {},
+                  onGalleryPressed: _navigateToGallery,
                 ),
                 const SizedBox(height: 30),
               ],
